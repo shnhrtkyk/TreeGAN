@@ -22,7 +22,7 @@ ___
 ![Single-class](https://github.com/seowok/TreeGAN/blob/master/results/fig_results.PNG "Plane and Chair")  
 
 - Single Class Interpolation.  
-![Plane-class Interpolation](https://github.com/seowok/TreeGAN/blob/master/results/plane_interpolation.gif) ![Chair-class Interpolation](https://github.com/seowok/TreeGAN/blob/master/results/chair_interpolation.gif)  
+![Single-class Interpolation](https://github.com/seowok/TreeGAN/blob/master/results/plane_interpolation.gif) 
 ___
 
 ## [Frechet Pointcloud Distance]
@@ -35,9 +35,10 @@ for Region Annotation in 3D Shape Collections_](http://web.stanford.edu/~ericyi/
 ___
 
 ## [Citing]
->inproceedings{~~,
-            title={},
-            author={},
+>@Inproceedings{tree-GAN,  
+            title={3D Point Cloud Generative Adversarial Network Based on Tree Structured Graph Convolutions},  
+            author={{Dong Wook Shu, Sung Woo Park} and Junseok Kwon},  
+            booktitle={{IEEE} International Conference on Computer Vision, {ICCV}},  
             year={2019}
             }
 
