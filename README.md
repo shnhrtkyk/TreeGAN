@@ -22,8 +22,7 @@ ___
 ![Single-class](https://github.com/seowok/TreeGAN/blob/master/results/fig_results.PNG "Plane and Chair")  
 
 - Single Class Interpolation.  
-![Plane-class Interpolation](https://github.com/seowok/TreeGAN/blob/master/results/plane_interpolation.gif)  
-![Chair-class Interpolation](https://github.com/seowok/TreeGAN/blob/master/results/chair_interpolation.gif)  
+![Plane-class Interpolation](https://github.com/seowok/TreeGAN/blob/master/results/plane_interpolation.gif) ![Chair-class Interpolation](https://github.com/seowok/TreeGAN/blob/master/results/chair_interpolation.gif)  
 ___
 
 ## [Frechet Pointcloud Distance]
