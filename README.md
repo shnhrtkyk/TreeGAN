@@ -1,5 +1,4 @@
 # **TreeGAN**
-___
 
 >This repository **TreeGAN** is for _**3D Point Cloud Generative Adversarial Network Based on Tree Structured Graph Convolutions**_ paper accepted on ICCV 2019
 ___
@@ -23,8 +22,8 @@ ___
 ![Single-class](https://github.com/seowok/TreeGAN/blob/master/results/fig_results.PNG "Plane and Chair")  
 
 - Single Class Interpolation.  
-![Plane-class Interpolation](https://github.com/seowok/TreeGAN/blob/master/results/plane_interpolation.gif)  
-![Chair-class Interpolation](https://github.com/seowok/TreeGAN/blob/master/results/chair_interpolation.gif)
+<img width="160" align="left" src="https://github.com/seowok/TreeGAN/blob/master/results/plane_interpolation.gif">
+<img width="160" align="right" src="https://github.com/seowok/TreeGAN/blob/master/results/chair_interpolation.gif">
 ___
 
 ## [Frechet Pointcloud Distance]
