@@ -171,7 +171,7 @@ class TreeGAN():
                         sample = self.G(tree).cpu()
                     fake_pointclouds = torch.cat((fake_pointclouds, sample), dim=0)
 
-                fpd = calculate_fpd(fake_pointclouds, batch_size=100, dims=1808, device=self.args.device)
+                fpd = calculate_fpd(fake_pointclouds, statistic_save_path=self.args.FPD_path, batch_size=100, dims=1808, device=self.args.device)
                 metric['FPD'].append(fpd)
                 print('[{:4} Epoch] Frechet Pointcloud Distance <<< {:.10f} >>>'.format(epoch, fpd))
 

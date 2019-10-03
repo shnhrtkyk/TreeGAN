@@ -32,6 +32,10 @@ ___
 for Region Annotation in 3D Shape Collections_](http://web.stanford.edu/~ericyi/project_page/part_annotation/index.html).
 
 - Our **pretrained PointNet-FPD version** use only subset of official ShapeNet dataset to get [PointNet classification performance](https://github.com/fxia22/pointnet.pytorch#classification-performance) higher than 95%.
+
+- We evaluate FPD scores using 5000 samples obtained from fixed trained model with best performances.
+
+- FPD evaluations have to use pre_statistics file for each class or all class version.
 ___
 
 ## [Citing]

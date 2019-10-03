@@ -176,13 +176,14 @@ def save_statistics(real_pointclouds, path, model, batch_size, dims, cuda):
     np.savez(path, m = m, s = s)
     print('save done !!!')
 
-def calculate_fpd(pointclouds1, pointclouds2=None, batch_size=100, dims=1808, device=None):
+def calculate_fpd(pointclouds1, pointclouds2=None, statistic_save_path=None, batch_size=100, dims=1808, device=None):
     """Calculates the FPD of two pointclouds"""
 
-    PointNet_path = './evaluation/cls_model_39.pth'
-    statistic_save_path = './evaluation/pre_statistics.npz'
+    PointNet_pretrained_path = './evaluation/cls_model_39.pth'
+    if statistic_save_path is None:
+        statistic_save_path = './evaluation/pre_statistics_all.npz'
     model = PointNetCls(k=16)
-    model.load_state_dict(torch.load(PointNet_path))
+    model.load_state_dict(torch.load(PointNet_pretrained_path))
     
     if device is not None:
         model.to(device)
