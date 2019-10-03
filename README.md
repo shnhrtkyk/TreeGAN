@@ -41,10 +41,9 @@ ___
 ## [Citing]
 >@Inproceedings{tree-GAN,  
             title={3D Point Cloud Generative Adversarial Network Based on Tree Structured Graph Convolutions},  
-            author={{Dong Wook Shu, Sung Woo Park} and Junseok Kwon},  
+            author={Dong Wook Shu, Sung Woo Park and Junseok Kwon},  
             booktitle={{IEEE} International Conference on Computer Vision, {ICCV}},  
-            year={2019}
-            }
+            year={2019}}
 
 ## [Setting]
 This project was tested on **Windows 10** / **Ubuntu 16.04**
