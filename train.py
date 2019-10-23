@@ -80,13 +80,13 @@ class TreeGAN():
                 # Start Time
                 start_time = time.time()
                 point, _ = data
-                point = point.to(args.device)
+                point = point.to(self.args.device)
 
                 # -------------------- Discriminator -------------------- #
                 for d_iter in range(self.args.D_iter):
                     self.D.zero_grad()
                     
-                    z = torch.randn(self.args.batch_size, 1, 96).to(args.device)
+                    z = torch.randn(self.args.batch_size, 1, 96).to(self.args.device)
                     tree = [z]
                     
                     with torch.no_grad():
@@ -110,7 +110,7 @@ class TreeGAN():
                 # ---------------------- Generator ---------------------- #
                 self.G.zero_grad()
                 
-                z = torch.randn(self.args.batch_size, 1, 96).to(args.device)
+                z = torch.randn(self.args.batch_size, 1, 96).to(self.args.device)
                 tree = [z]
                 
                 fake_point = self.G(tree)
