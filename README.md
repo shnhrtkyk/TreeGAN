@@ -47,7 +47,7 @@ ___
                 booktitle = {The IEEE International Conference on Computer Vision (ICCV)},
                 month = {October},
                 year = {2019}}
-           
+                           
            
 ## [Setting]
 This project was tested on **Windows 10** / **Ubuntu 16.04**
