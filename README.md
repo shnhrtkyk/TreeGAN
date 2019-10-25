@@ -41,12 +41,14 @@ for Region Annotation in 3D Shape Collections_](http://web.stanford.edu/~ericyi/
 ___
 
 ## [Citing]
->@Inproceedings{tree-GAN,  
-            title={3D Point Cloud Generative Adversarial Network Based on Tree Structured Graph Convolutions},  
-            author={Dong Wook Shu, Sung Woo Park and Junseok Kwon},  
-            booktitle={{IEEE} International Conference on Computer Vision, {ICCV}},  
-            year={2019}}
-
+>@InProceedings{Shu_2019_ICCV,
+                author = {Shu, Dong Wook and Park, Sung Woo and Kwon, Junseok},
+                title = {3D Point Cloud Generative Adversarial Network Based on Tree Structured Graph Convolutions},
+                booktitle = {The IEEE International Conference on Computer Vision (ICCV)},
+                month = {October},
+                year = {2019}}
+           
+           
 ## [Setting]
 This project was tested on **Windows 10** / **Ubuntu 16.04**
 Using _conda install_ command is recommended to setting.
