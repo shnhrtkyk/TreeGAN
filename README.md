@@ -41,13 +41,14 @@ for Region Annotation in 3D Shape Collections_](http://web.stanford.edu/~ericyi/
 ___
 
 ## [Citing]
->@InProceedings{Shu_2019_ICCV,
-                author = {Shu, Dong Wook and Park, Sung Woo and Kwon, Junseok},
-                title = {3D Point Cloud Generative Adversarial Network Based on Tree Structured Graph Convolutions},
-                booktitle = {The IEEE International Conference on Computer Vision (ICCV)},
-                month = {October},
-                year = {2019}
-                }
+'''
+@InProceedings{Shu_2019_ICCV,
+               author = {Shu, Dong Wook and Park, Sung Woo and Kwon, Junseok},
+               title = {3D Point Cloud Generative Adversarial Network Based on Tree Structured Graph Convolutions},
+               booktitle = {The IEEE International Conference on Computer Vision (ICCV)},
+               month = {October},
+               year = {2019}}
+'''
                            
            
 ## [Setting]
