@@ -46,7 +46,8 @@ ___
                 title = {3D Point Cloud Generative Adversarial Network Based on Tree Structured Graph Convolutions},
                 booktitle = {The IEEE International Conference on Computer Vision (ICCV)},
                 month = {October},
-                year = {2019}}
+                year = {2019}
+                }
                            
            
 ## [Setting]
