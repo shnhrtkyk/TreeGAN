@@ -38,6 +38,8 @@ for Region Annotation in 3D Shape Collections_](http://web.stanford.edu/~ericyi/
 - We evaluate FPD scores using 5000 samples obtained from fixed trained model with best performances.
 
 - FPD evaluations have to use pre_statistics file for each class or all class version.
+
+- We just provide intermediate pretrained checkpoints and generated samples having fine scores when they are trained in about 1000 epochs. 
 ___
 
 ## [Citing]
@@ -59,6 +61,8 @@ Using _conda install_ command is recommended to setting.
 - Numpy
 - Pytorch 1.0
 - visdom
+- Scipy 1.2.1
+- Pillow
 ___
 
 ## [Arguments]

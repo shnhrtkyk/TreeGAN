@@ -24,7 +24,7 @@ class TreeGAN():
 
         # -------------------------------------------------Module---------------------------------------------- #
         self.G = Generator(batch_size=args.batch_size, features=args.G_FEAT, degrees=args.DEGREE, support=args.support).to(args.device)
-        self.D = Discriminator(batch_size=args.batch_size, features=args.D_FEAT).to(args.device)             
+        self.D = Discriminator(batch_size=args.batch_size, features=0.5*args.D_FEAT).to(args.device)             
         
         self.optimizerG = optim.Adam(self.G.parameters(), lr=args.lr, betas=(0, 0.99))
         self.optimizerD = optim.Adam(self.D.parameters(), lr=args.lr, betas=(0, 0.99))
@@ -39,7 +39,7 @@ class TreeGAN():
         print("Visdom connected.")
         # ----------------------------------------------------------------------------------------------------- #
 
-    def run(self, save_ckpt=None, load_ckpt=None):        
+    def run(self, save_ckpt=None, load_ckpt=None, result_path=None):        
         color_num = self.args.visdom_color
         chunk_size = int(self.args.point_num / color_num)
         colors = np.array([(227,0,27),(231,64,28),(237,120,15),(246,176,44),
@@ -51,32 +51,29 @@ class TreeGAN():
         colors = colors[np.random.choice(len(colors), color_num, replace=False)]
         label = torch.stack([torch.ones(chunk_size).type(torch.LongTensor) * inx for inx in range(1,int(color_num)+1)], dim=0).view(-1)
 
-        if load_ckpt is None:
-            epoch_log = 0
-            iter_log = 0
-            
-            loss_log = {'G_loss': [], 'D_loss': []}
-            loss_legend = list(loss_log.keys())
+        epoch_log = 0
+        
+        loss_log = {'G_loss': [], 'D_loss': []}
+        loss_legend = list(loss_log.keys())
 
-            metric = {'FPD': []}
-        else:
-            checkpoint = torch.load(load_ckpt)
+        metric = {'FPD': []}
+        if load_ckpt is not None:
+            checkpoint = torch.load(load_ckpt, map_location=self.args.device)
             self.D.load_state_dict(checkpoint['D_state_dict'])
             self.G.load_state_dict(checkpoint['G_state_dict'])
 
             epoch_log = checkpoint['epoch']
-            iter_log = checkpoint['iter']
 
             loss_log['G_loss'] = checkpoint['G_loss']
             loss_log['D_loss'] = checkpoint['D_loss']
             loss_legend = list(loss_log.keys())
 
-            metric['FPD'] = checkpoint['FGD']
+            metric['FPD'] = checkpoint['FPD']
             
             print("Checkpoint loaded.")
 
         for epoch in range(epoch_log, self.args.epochs):
-            for _iter, data in enumerate(self.dataLoader, iter_log):
+            for _iter, data in enumerate(self.dataLoader):
                 # Start Time
                 start_time = time.time()
                 point, _ = data
@@ -143,28 +140,14 @@ class TreeGAN():
 
                     if len(metric['FPD']) > 0:
                         self.vis.line(X=np.arange(len(metric['FPD'])), Y=np.array(metric['FPD']), win=3, 
-                                      opts={'title': "Frechet Pointcloud Distance", 'legend': ["FPD best : {}".format(np.min(metric['FPD']))]})
+                                      opts={'title': "Frechet Pointcloud Distance", 'legend': ["{} / FPD best : {:.6f}".format(np.argmin(metric['FPD']), np.min(metric['FPD']))]})
 
                     print('Figures are saved.')
-
-            # ---------------------- Save checkpoint --------------------- #
-            if epoch % 10 == 0 and not save_ckpt == None:
-                torch.save({
-                        'epoch': epoch,
-                        'iter': _iter,
-                        'D_state_dict': self.D.state_dict(),
-                        'G_state_dict': self.G.state_dict(),
-                        'D_loss': loss_log['D_loss'],
-                        'G_loss': loss_log['G_loss'],
-                        'FPD': metric['FPD']
-                }, save_ckpt+str(epoch)+'.pt')
-
-                print('Checkpoint is saved.')
             
             # ---------------- Frechet Pointcloud Distance --------------- #
-            if epoch % 1 == 0:
+            if epoch % 1 == 0 and not result_path == None:
                 fake_pointclouds = torch.Tensor([])
-                for i in range(100): # batch_size * 100
+                for i in range(250): # For 5000 samples
                     z = torch.randn(self.args.batch_size, 1, 96).to(self.args.device)
                     tree = [z]
                     with torch.no_grad():
@@ -176,8 +159,21 @@ class TreeGAN():
                 print('[{:4} Epoch] Frechet Pointcloud Distance <<< {:.10f} >>>'.format(epoch, fpd))
 
                 class_name = args.class_choice if args.class_choice is not None else 'all'
-                torch.save(fake_pointclouds, './model/generated/treeGCN_{}_{}.pt'.format(str(epoch), class_name))
+                torch.save(fake_pointclouds, result_path+str(epoch)+'_'+class_name+'.pt')
                 del fake_pointclouds
+
+            # ---------------------- Save checkpoint --------------------- #
+            if epoch % 1 == 0 and not save_ckpt == None:
+                torch.save({
+                        'epoch': epoch,
+                        'D_state_dict': self.D.state_dict(),
+                        'G_state_dict': self.G.state_dict(),
+                        'D_loss': loss_log['D_loss'],
+                        'G_loss': loss_log['G_loss'],
+                        'FPD': metric['FPD']
+                }, save_ckpt+str(epoch)+'.pt')
+
+                print('Checkpoint is saved.')
             
                 
                     
@@ -186,9 +182,11 @@ if __name__ == '__main__':
     args = Arguments().parser().parse_args()
 
     args.device = torch.device('cuda:'+str(args.gpu) if torch.cuda.is_available() else 'cpu')
+    torch.cuda.set_device(args.device)
 
     SAVE_CHECKPOINT = args.ckpt_path + args.ckpt_save if args.ckpt_save is not None else None
     LOAD_CHECKPOINT = args.ckpt_path + args.ckpt_load if args.ckpt_load is not None else None
+    RESULT_PATH = args.result_path + args.result_save
 
     model = TreeGAN(args)
-    model.run(save_ckpt=SAVE_CHECKPOINT, load_ckpt=LOAD_CHECKPOINT)
+    model.run(save_ckpt=SAVE_CHECKPOINT, load_ckpt=LOAD_CHECKPOINT, result_path=RESULT_PATH)
