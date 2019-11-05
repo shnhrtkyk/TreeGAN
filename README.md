@@ -39,7 +39,7 @@ for Region Annotation in 3D Shape Collections_](http://web.stanford.edu/~ericyi/
 
 - FPD evaluations have to use pre_statistics file for each class or all class version.
 
-- We just provide intermediate pretrained checkpoints and generated samples having fine scores when they are trained in about 1000 epochs. 
+- We just provide [intermediate pretrained checkpoints and generated samples](https://drive.google.com/file/d/1FQgfBJ-tWQPE8HkqbIe9s7Kv87GfRP-z/view?usp=sharing) having fine scores when they are trained in about 1000 epochs. 
 ___
 
 ## [Citing]
