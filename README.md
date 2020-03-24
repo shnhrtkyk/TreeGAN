@@ -31,6 +31,8 @@ ___
 - This FPD version is for [ShapeNet-Benchmark dataset](https://shapenet.cs.stanford.edu/ericyi/shapenetcore_partanno_segmentation_benchmark_v0.zip) from [_A Scalable Active Framework 
 for Region Annotation in 3D Shape Collections_](http://web.stanford.edu/~ericyi/project_page/part_annotation/index.html).
 
+- We also trained our model using same dataset for evaluation.
+
 - Our **pretrained PointNet-FPD version** use only subset of official ShapeNet dataset to get [PointNet classification performance](https://github.com/fxia22/pointnet.pytorch#classification-performance) higher than 95%.
 
 - We recommend to compose pointclouds sampled uniformly from those of ShapeNet-Benchmark dataset for training. 
