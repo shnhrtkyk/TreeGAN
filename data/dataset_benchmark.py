@@ -75,3 +75,59 @@ class BenchmarkDataset(data.Dataset):
 
     def __len__(self):
         return len(self.datapath)
+
+
+class MyDataset(data.Dataset):
+    def __init__(self, root, npoints=8192, utransform=None):
+        self.npoints = npoints
+        self.root = root
+        self.imglist = []
+        self.pointlist = []
+        self.imgpath = root + "/img/"
+        self.pointpath = root + "/point/"
+        self.img_list = files = glob.glob(self.imgpath + "/*.tif")
+        self.point_list = files = glob.glob(self.pointpath + "/*.txt")
+
+        for file in self.point_list:
+            print(file)
+            # point cloud 取得
+            src = np.loadtxt(file)
+            normlized_xyz = np.zeros((npoints, 3))
+            self.coord_min, self.coord_max = np.amin(src, axis=0)[:3], np.amax(src, axis=0)[:3]
+            src[:, 0] = src[:, 0] / self.coord_max[0]
+            src[:, 1] = src[:, 1] / self.coord_max[1]
+            src[:, 2] = src[:, 2] / self.coord_max[2]
+            if(len(src) >=npoints):
+                np.random.shuffle(src)
+                normlized_xyz[:,:]=src[:,:npoints]
+            else:
+                normlized_xyz[:,:len(src)]=src[:,:]
+
+            self.pointlist.append(src)
+
+        for file in self.img_list:
+            print(file)
+            # geotiff取得
+            src = rasterio.open(file)
+            arr = src.read()  # read all raster values
+            arr = arr.astype(np.uint8)
+            self.imglist.append(arr)
+                
+
+        self.data_num = len(self.img_list)
+        
+
+    def __getitem__(self, index):
+        img = self.imglist[index]
+        point = self.pointlist[index]
+        point = torch.from_numpy(point)
+        if self.transform:
+            img = self.transform(img)
+
+
+        return point_set, img
+
+    def __len__(self):
+        return len(self.imglist)
+
+

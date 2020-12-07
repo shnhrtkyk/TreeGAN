@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 from data.dataset_benchmark import BenchmarkDataset
+from model.encoder import ResNetUNet
 from model.gan_network import Generator, Discriminator
 from model.gradient_penalty import GradientPenalty
 from evaluation.FPD import calculate_fpd
@@ -23,9 +24,11 @@ class TreeGAN():
         # ----------------------------------------------------------------------------------------------------- #
 
         # -------------------------------------------------Module---------------------------------------------- #
+        self.Enc = Generator(batch_size=args.batch_size, features=args.G_FEAT, degrees=args.DEGREE, support=args.support).to(args.device)
         self.G = Generator(batch_size=args.batch_size, features=args.G_FEAT, degrees=args.DEGREE, support=args.support).to(args.device)
-        self.D = Discriminator(batch_size=args.batch_size, features=args.D_FEAT).to(args.device)             
-        
+        self.D = Discriminator(batch_size=args.batch_size, features=args.D_FEAT).to(args.device)   
+
+        self.optimizerEnc = optim.Adam(self.Enc.parameters(), lr=args.lr, betas=(0, 0.99))
         self.optimizerG = optim.Adam(self.G.parameters(), lr=args.lr, betas=(0, 0.99))
         self.optimizerD = optim.Adam(self.D.parameters(), lr=args.lr, betas=(0, 0.99))
 
