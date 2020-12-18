@@ -4,6 +4,8 @@ import os
 import os.path
 import torch
 import numpy as np
+import glob
+import open3d
 
 class BenchmarkDataset(data.Dataset):
     def __init__(self, root, npoints=2500, uniform=False, classification=False, class_choice=None):
@@ -43,6 +45,7 @@ class BenchmarkDataset(data.Dataset):
 
         self.classes = dict(zip(sorted(self.cat), range(len(self.cat))))
         print(self.classes)
+        
         self.num_seg_classes = 0
         if not self.classification:
             for i in range(len(self.datapath)//50):
@@ -77,57 +80,121 @@ class BenchmarkDataset(data.Dataset):
         return len(self.datapath)
 
 
+# class MyDataset(data.Dataset):
+#     def __init__(self, root, npoints=8192, utransform=None):
+#         self.npoints = npoints
+#         self.root = root
+#         self.imglist = []
+#         self.pointlist = []
+#         self.imgpath = root + "/img/"
+#         self.pointpath = root + "/point/"
+#         self.img_list = files = glob.glob(self.imgpath + "/*.tif")
+#         self.point_list = files = glob.glob(self.pointpath + "/*.txt")
+
+#         for file in self.point_list:
+#             print(file)
+#             # point cloud 取得
+#             src = np.loadtxt(file)
+#             normlized_xyz = np.zeros((npoints, 3))
+#             self.coord_min, self.coord_max = np.amin(src, axis=0)[:3], np.amax(src, axis=0)[:3]
+#             src[:, 0] = src[:, 0] / self.coord_max[0]
+#             src[:, 1] = src[:, 1] / self.coord_max[1]
+#             src[:, 2] = src[:, 2] / self.coord_max[2]
+#             if(len(src) >=npoints):
+#                 np.random.shuffle(src)
+#                 normlized_xyz[:,:]=src[:,:npoints]
+#             else:
+#                 normlized_xyz[:,:len(src)]=src[:,:]
+
+#             self.pointlist.append(src)
+
+#         for file in self.img_list:
+#             print(file)
+#             # geotiff取得
+#             src = rasterio.open(file)
+#             arr = src.read()  # read all raster values
+#             arr = arr.astype(np.uint8)
+#             self.imglist.append(arr)
+                
+
+#         self.data_num = len(self.img_list)
+        
+
+#     def __getitem__(self, index):
+#         img = self.imglist[index]
+#         point = self.pointlist[index]
+#         point = torch.from_numpy(point)
+#         if self.transform:
+#             img = self.transform(img)
+
+
+#         return point_set, img
+
+#     def __len__(self):
+#         return len(self.imglist)
+
+
 class MyDataset(data.Dataset):
     def __init__(self, root, npoints=8192, utransform=None):
         self.npoints = npoints
         self.root = root
-        self.imglist = []
         self.pointlist = []
-        self.imgpath = root + "/img/"
         self.pointpath = root + "/point/"
-        self.img_list = files = glob.glob(self.imgpath + "/*.tif")
-        self.point_list = files = glob.glob(self.pointpath + "/*.txt")
-
+        self.point_list  = glob.glob(self.pointpath + "/*.txt")[:]
+        count = 0
         for file in self.point_list:
             print(file)
             # point cloud 取得
             src = np.loadtxt(file)
+            pcd = o3d.geometry.PointCloud()
+            pcd.points = o3d.utility.Vector3dVector(src)
+            # cl, ind = pcd.remove_radius_outlier(nb_points=16, radius=0.05)
+            cl, ind = pcd.remove_statistical_outlier(nb_neighbors=20,
+                                                        std_ratio=2.0)
+            pcd = pcd.select_down_sample(ind)
+            src = np.asarray(pcd.points)
             normlized_xyz = np.zeros((npoints, 3))
             self.coord_min, self.coord_max = np.amin(src, axis=0)[:3], np.amax(src, axis=0)[:3]
-            src[:, 0] = src[:, 0] / self.coord_max[0]
-            src[:, 1] = src[:, 1] / self.coord_max[1]
-            src[:, 2] = src[:, 2] / self.coord_max[2]
+            # print(self.coord_max )
+            if(self.coord_max[0]==0):continue
+            if(self.coord_max[1]==0):continue
+            if(self.coord_max[2]==0):continue
+            src[:, 0] = src[:, 0] - self.coord_min[0]
+            src[:, 1] = src[:, 1] - self.coord_min[1]
+            src[:, 2] = src[:, 2] - self.coord_min[2]
             if(len(src) >=npoints):
                 np.random.shuffle(src)
-                normlized_xyz[:,:]=src[:,:npoints]
+                normlized_xyz[:,:]=src[:npoints,:]
             else:
-                normlized_xyz[:,:len(src)]=src[:,:]
+                normlized_xyz[:len(src),:]=src[:,:]
 
-            self.pointlist.append(src)
+            self.pointlist.append(normlized_xyz)
 
-        for file in self.img_list:
-            print(file)
-            # geotiff取得
-            src = rasterio.open(file)
-            arr = src.read()  # read all raster values
-            arr = arr.astype(np.uint8)
-            self.imglist.append(arr)
+            count+=1
+            # if(count>100):break
+            # print(normlized_xyz.shape)
                 
 
-        self.data_num = len(self.img_list)
+        self.data_num = len(self.pointlist)
         
 
     def __getitem__(self, index):
-        img = self.imglist[index]
         point = self.pointlist[index]
         point = torch.from_numpy(point)
-        if self.transform:
-            img = self.transform(img)
-
-
-        return point_set, img
+        return point
 
     def __len__(self):
-        return len(self.imglist)
+        return len(self.pointlist)
 
 
+
+# def main():
+#       print("Test")
+#       dataset = MyDataset("/home/acc12368pg/group/shino/3dgen/data/")
+#       dataloader =  torch.utils.data.DataLoader(dataset, batch_size=12, shuffle=True, pin_memory=True, num_workers=4)
+#       for data in trainloader:
+#           print(data)
+
+
+# if __name__ == '__main__':
+#     main()
