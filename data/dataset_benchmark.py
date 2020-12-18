@@ -5,7 +5,7 @@ import os.path
 import torch
 import numpy as np
 import glob
-import open3d
+import open3d  as o3d
 
 class BenchmarkDataset(data.Dataset):
     def __init__(self, root, npoints=2500, uniform=False, classification=False, class_choice=None):
